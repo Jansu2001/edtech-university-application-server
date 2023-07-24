@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express()
 const cors = require('cors');
+require('dotenv').config()
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
@@ -18,10 +19,7 @@ app.get('/', (req, res) => {
 })
 
 
-
-
-
-const uri = "mongodb+srv://edtech-university-application:8855u3Vlf6R5WCYl@cluster0.ceweuof.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.EDTECH_USER}:${process.env.EDTECH_PASS}@cluster0.ceweuof.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -40,6 +38,7 @@ async function run() {
 
         const usersCollection = client.db('EdTechApplication').collection('allUsers')
         const collagesCollection = client.db('EdTechApplication').collection('Collages')
+        const addmissionCollection = client.db('EdTechApplication').collection('all-addmissions')
 
 
 
@@ -67,6 +66,17 @@ async function run() {
             const result = await collagesCollection.find(query).toArray()
             res.send(result)
         })
+
+
+
+
+        // Geeting all Addmission Form
+        app.post('/addmission', async (req, res) => {
+            const addmissions = req.body
+            const result = await addmissionCollection.insertOne(addmissions)
+            res.send(result)
+        })
+
 
 
 
